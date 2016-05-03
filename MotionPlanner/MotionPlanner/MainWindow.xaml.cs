@@ -32,6 +32,8 @@ namespace MotionPlanner
         private int indexSquare2 = -1;
         private int indexSquare3 = -1;
         private int [,] screenArray = new int[500, 500]; // Either, -1 for edge, 0, or 1
+        private Point [,] LastPointArray = new Point[500,500]; // Point at index [x,y] has the x and y of the point that went to it
+                                                               // (used for backtracing)
         private Point StartPos = new Point(-1,-1), EndPos = new Point(-1, -1);
 
         public MainWindow()
@@ -331,7 +333,7 @@ namespace MotionPlanner
             int climbX = 0; // -1 for left, 0 for no direction, 1 for right
             int climbY = 0; // -1 for down, 0 for no direction, 1 for up
 
-            AStar(StartPos, EndPos);
+            Route = AStar(StartPos, EndPos);
 
             // Print Final Output
             Console.WriteLine("[");
