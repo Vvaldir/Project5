@@ -57,12 +57,12 @@ namespace MotionPlanner
             T = new Thread(new ThreadStart(ThreadBody));
         }
 
-         private void squaresBox_Checked(object sender, RoutedEventArgs e)
+        private void squaresBox_Checked(object sender, RoutedEventArgs e)
         {
             placingSquares = true;
             startBox.IsChecked = false;
             endBox.IsChecked = false;
-            Console.WriteLine("You placing squares is true! You!");
+            //Console.WriteLine("You placing squares is true! You!");
         }
 
         private void startBox_Checked(object sender, RoutedEventArgs e)
@@ -70,7 +70,7 @@ namespace MotionPlanner
             placingStart = true;
             squaresBox.IsChecked = false;
             endBox.IsChecked = false;
-            Console.WriteLine("You placing start You");
+            //Console.WriteLine("You placing start You");
         }
 
         private void endBox_Checked(object sender, RoutedEventArgs e)
@@ -78,7 +78,7 @@ namespace MotionPlanner
             placingEnd = true;
             startBox.IsChecked = false;
             squaresBox.IsChecked = false;
-            Console.WriteLine("You placing end You");
+            //Console.WriteLine("You placing end You");
         }
 
         private void endBox_Unchecked(object sender, RoutedEventArgs e)
@@ -102,8 +102,8 @@ namespace MotionPlanner
             {
                 Point p = e.MouseDevice.GetPosition(this);
                 numSquaresPlaced++;
-                Console.WriteLine("Please click where you want the top left corner of square {0} to be.", numSquaresPlaced);
-                Console.WriteLine("Placing the square at ({0}, {1})", p.X, p.Y-21);
+                //Console.WriteLine("Please click where you want the top left corner of square {0} to be.", numSquaresPlaced);
+                //Console.WriteLine("Placing the square at ({0}, {1})", p.X, p.Y-21);
                 Rectangle rect = new Rectangle();
                 Color myColor = new Color();
                 /*Random rand = new Random();
@@ -165,7 +165,7 @@ namespace MotionPlanner
                                     }
                                 }
                             }
-                            Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
+                            //Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
 
                         }
                         break;
@@ -217,7 +217,7 @@ namespace MotionPlanner
                                     }
                                 }
                             }
-                            Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
+                            //Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
 
                         }
                         break;
@@ -268,7 +268,7 @@ namespace MotionPlanner
                                     }
                                 }
                             }
-                            Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
+                            //Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
                             
                         }
                         break;
@@ -532,6 +532,19 @@ namespace MotionPlanner
             finalRoute.Reverse();
 
             return finalRoute;
+        }
+
+        private void clear_Click(object sender, RoutedEventArgs e)
+        {
+            LayoutRoot.Children.Clear();
+            endPlaced = false;
+            startPlaced = false;
+            numSquaresPlaced = 0;
+            indexSquare1 = -1;
+            indexSquare2 = -1;
+            indexSquare3 = -1;
+            screenArray = new int[500, 500];
+            LastPointArray = new Point[500, 500];
         }
     }
 }
