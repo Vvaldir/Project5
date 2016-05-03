@@ -105,7 +105,11 @@ namespace MotionPlanner
                 Console.WriteLine("Please click where you want the top left corner of square {0} to be.", numSquaresPlaced);
                 Console.WriteLine("Placing the square at ({0}, {1})", p.X, p.Y-21);
                 Rectangle rect = new Rectangle();
-                rect.Fill = Brushes.Honeydew;
+                Color myColor = new Color();
+                /*Random rand = new Random();
+                myColor.R = 
+                SolidColorBrush myBrush = new SolidColorBrush()*/
+                rect.Fill = Brushes.Firebrick;
                 Canvas.SetTop(rect, p.Y - 21);
                 Canvas.SetLeft(rect, p.X);
                 double row;
@@ -384,7 +388,7 @@ namespace MotionPlanner
                 else
                 {
                     // Loop through every direction from the point to get all of his neighbors
-                    for (int i = 0; i < 4; ++i)
+                    for (int i = 0; i < 8; ++i)
                     {
                         NextPoint = DirectionSeletor(i, TempPoint);
 
@@ -413,6 +417,14 @@ namespace MotionPlanner
                     return GoRight(CurrPos);
                 case 3:
                     return GoDown(CurrPos);
+                case 4:
+                    return GoNorthEast(CurrPos);
+                case 5:
+                    return GoNorthWest(CurrPos);
+                case 6:
+                    return GoSouthEast(CurrPos);
+                case 7:
+                    return GoSouthWest(CurrPos);
                 default:
                     return new Point(-1, -1);
             }
@@ -456,6 +468,46 @@ namespace MotionPlanner
                     return pos;
                 }
             return new Point(-1, -1);
+        }
+
+        Point GoNorthWest(Point Currpos)
+        {
+            Point fail = new Point(-1, -1);
+            var leftP = GoLeft(Currpos);
+            var upP = GoUp(Currpos);
+            if (leftP == fail || upP == fail)
+                return fail;
+            return new Point(leftP.X, upP.Y);
+        }
+
+        Point GoNorthEast(Point Currpos)
+        {
+            Point fail = new Point(-1, -1);
+            var rightP = GoRight(Currpos);
+            var upP = GoUp(Currpos);
+            if (rightP == fail || upP == fail)
+                return fail;
+            return new Point(rightP.X, upP.Y);
+        }
+
+        Point GoSouthWest(Point Currpos)
+        {
+            Point fail = new Point(-1, -1);
+            var leftP = GoLeft(Currpos);
+            var downP = GoDown(Currpos);
+            if (leftP == fail || downP == fail)
+                return fail;
+            return new Point(leftP.X, downP.Y);
+        }
+
+        Point GoSouthEast(Point Currpos)
+        {
+            Point fail = new Point(-1, -1);
+            var rightP = GoRight(Currpos);
+            var downP = GoDown(Currpos);
+            if (rightP == fail || downP == fail)
+                return fail;
+            return new Point(rightP.X, downP.Y);
         }
 
         // Return The Manhattan Distance between two points
