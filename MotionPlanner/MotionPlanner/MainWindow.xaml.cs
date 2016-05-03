@@ -366,7 +366,7 @@ namespace MotionPlanner
 
         List<Point> AStar(Point SP, Point EP)
         {
-            return List<Point>();
+            return new List<Point>();
         }
 
         bool GoDown(ref Point Currpos)
