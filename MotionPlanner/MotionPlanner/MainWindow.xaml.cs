@@ -442,5 +442,20 @@ namespace MotionPlanner
         int ManhattanDist(Point currpos, Point endpos){
             return (int)(Math.Abs(currpos.X - endpos.X) + Math.Abs(currpos.Y - endpos.Y));
         }
+        
+             List<Point> backtrace(Point P){
+            List<Point> finalRoute = new List<Point>();
+            Point temp = P;
+
+            finalRoute.Add(P);
+            while (temp != StartPos)
+            {   
+                temp = LastPointArray[(int)Math.Floor(temp.X), (int)Math.Floor(temp.Y)];
+                finalRoute.Add(temp);
+            }
+            finalRoute.Add(StartPos);
+            finalRoute.Reverse();
+            return finalRoute;
+        }
     }
 }
