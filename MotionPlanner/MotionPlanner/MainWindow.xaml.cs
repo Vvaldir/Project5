@@ -407,6 +407,7 @@ namespace MotionPlanner
             Point TempPoint = new Point();
             Point NextPoint = new Point();
             Point FailPoint = new Point(-1, -1); // For Failure Comparision Purposes
+            double g_val = 0.0;
 
             Console.WriteLine("Thinking..");
             while (Frontier.Count != 0)
@@ -429,9 +430,11 @@ namespace MotionPlanner
 
                         if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
                         {   // Add member to PQ if not invalid and not in PQ already.
+
                             Console.WriteLine("adding: {0}", NextPoint);
+                            g_val = (i < 4) ? Math.Sqrt(2) : 1;
                             LastPointArray[(int)Math.Floor(NextPoint.X), (int)Math.Floor(NextPoint.Y)] = TempPoint;
-                            Frontier.Enqueue(NextPoint, 1 + ManhattanDist(NextPoint, EP) + ManhattanDist(TempPoint, EP));
+                            Frontier.Enqueue(NextPoint, g_val + ManhattanDist(NextPoint, EP) + ManhattanDist(TempPoint, EP));
                         }
                     }
                 }
