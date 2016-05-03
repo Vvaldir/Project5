@@ -53,21 +53,27 @@ namespace MotionPlanner
             
         }
 
-        private void squaresBox_Checked(object sender, RoutedEventArgs e)
+         private void squaresBox_Checked(object sender, RoutedEventArgs e)
         {
             placingSquares = true;
+            startBox.IsChecked = false;
+            endBox.IsChecked = false;
             Console.WriteLine("You placing squares is true! You!");
         }
 
         private void startBox_Checked(object sender, RoutedEventArgs e)
         {
             placingStart = true;
+            squaresBox.IsChecked = false;
+            endBox.IsChecked = false;
             Console.WriteLine("You placing start You");
         }
 
         private void endBox_Checked(object sender, RoutedEventArgs e)
         {
             placingEnd = true;
+            startBox.IsChecked = false;
+            squaresBox.IsChecked = false;
             Console.WriteLine("You placing end You");
         }
 
