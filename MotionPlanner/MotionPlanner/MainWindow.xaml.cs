@@ -409,21 +409,21 @@ namespace MotionPlanner
         { // Based on I, go in the appropriate Direction.
             switch (I)
             {
-                case 0:
-                    return GoUp(CurrPos);
-                case 1:
-                    return GoLeft(CurrPos);
-                case 2:
-                    return GoRight(CurrPos);
-                case 3:
-                    return GoDown(CurrPos);
-                case 4:
-                    return GoNorthEast(CurrPos);
-                case 5:
-                    return GoNorthWest(CurrPos);
-                case 6:
-                    return GoSouthEast(CurrPos);
                 case 7:
+                    return GoUp(CurrPos);
+                case 6:
+                    return GoLeft(CurrPos);
+                case 5:
+                    return GoRight(CurrPos);
+                case 4:
+                    return GoDown(CurrPos);
+                case 3:
+                    return GoNorthEast(CurrPos);
+                case 2:
+                    return GoNorthWest(CurrPos);
+                case 1:
+                    return GoSouthEast(CurrPos);
+                case 0:
                     return GoSouthWest(CurrPos);
                 default:
                     return new Point(-1, -1);
