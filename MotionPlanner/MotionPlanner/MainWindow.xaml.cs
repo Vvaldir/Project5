@@ -354,18 +354,22 @@ namespace MotionPlanner
                 TempPoint = Frontier.Dequeue();
                 VistedNodes.Add(TempPoint);
                 // Loop through every direction.
-                for (int i = 0; i < 4; ++i)
+                if (TempPoint == EP) // Exit Case
                 {
-                    NextPoint = DirectionSeletor(i, TempPoint);
-                    if (NextPoint == EP) // Exit Case
+                    // Build Output, then break
+                    break;
+                }
+                else
+                {
+                    for (int i = 0; i < 4; ++i)
                     {
-                        // Build Output, then break
-                        break;
-                    }
-                    else if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
-                    {
-                        // Add member to PQ if not invalid and not in PQ already.
-                        Frontier.Enqueue(NextPoint, 1 + ManhattanDist(NextPoint, EP));
+                        NextPoint = DirectionSeletor(i, TempPoint);
+
+                        if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
+                        {
+                            // Add member to PQ if not invalid and not in PQ already.
+                            Frontier.Enqueue(NextPoint, 1 + ManhattanDist(NextPoint, EP));
+                        }
                     }
                 }
             }
