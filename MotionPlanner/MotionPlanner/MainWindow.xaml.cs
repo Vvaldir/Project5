@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 
 namespace MotionPlanner
 {
@@ -34,10 +35,11 @@ namespace MotionPlanner
         private int indexSquare3 = -1;
         private Point StartPos = new Point(-1, -1);
         private Point EndPos = new Point(-1, -1);
+        List<Point> Route = new List<Point>(); // Generate List for Route
         private int [,] screenArray = new int[500, 500]; // Either, -1 for edge, 0, or 1
         private Point [,] LastPointArray = new Point[500,500]; // Point at index [x,y] has the x and y of the point that went to it
                                                                // (used for backtracing)
-        
+        Thread T;
 
         public MainWindow()
         {
@@ -52,7 +54,7 @@ namespace MotionPlanner
                 Console.WriteLine(vertex);
             var vertList = RayGraph.Vertices.ToList();
             var x = vertList[0];
-            
+            T = new Thread(new ThreadStart(ThreadBody));
         }
 
          private void squaresBox_Checked(object sender, RoutedEventArgs e)
@@ -314,15 +316,25 @@ namespace MotionPlanner
                 Console.WriteLine("Update Waypoints first!");
                 return;
             }
-            List<Point> Route = new List<Point>(); // Generate List for Route
+            
             Point currpos = new Point(StartPos.X, StartPos.Y);
             Point oldpos = currpos;
             Point FirstFail = new Point(-1,-1);
 
-            Route = AStar(StartPos, EndPos);
-
+            
+            //Route = AStar(StartPos, EndPos);
+            // Process Route
+            T.Start();
+            T.Join();
             PrintRoute(Route);
             //return Route;
+        }
+
+
+
+        void ThreadBody()
+        {   // Function to Run A* in a thread.
+            Route = AStar(StartPos, EndPos);
         }
 
         void PrintRoute(List<Point> Route)
@@ -357,15 +369,15 @@ namespace MotionPlanner
             Point NextPoint = new Point();
             Point FailPoint = new Point(-1, -1); // For Failure Comparision Purposes
 
+            Console.WriteLine("Thinking..");
             while (Frontier.Count != 0)
             {
                 TempPoint = Frontier.Dequeue();
                 VistedNodes.Add(TempPoint);
                 
                 if (TempPoint == EP) // Exit Case
-                {
-                    // Build Output, then break
-                    Console.WriteLine("Breaking on: {0}", TempPoint);
+                {   // Build Output, then break
+                    //Console.WriteLine("Breaking on: {0}", TempPoint);
                     Output = Backtrace(EP);
                     break;
                 }
@@ -385,6 +397,7 @@ namespace MotionPlanner
                     }
                 }
             }
+            Console.WriteLine("Done!");
             return Output;
         }
 
@@ -458,10 +471,10 @@ namespace MotionPlanner
             while (temp != StartPos)
             {   
                 temp = LastPointArray[(int)Math.Floor(temp.X), (int)Math.Floor(temp.Y)];
-                Console.WriteLine("Backtracing to: {0}", temp);
+                //Console.WriteLine("Backtracing to: {0}", temp);
                 finalRoute.Add(temp);
             }
-
+            Console.WriteLine("Solution Found!");
             finalRoute.Add(StartPos);
             finalRoute.Reverse();
 
