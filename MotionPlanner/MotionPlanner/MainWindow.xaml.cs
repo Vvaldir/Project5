@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Priority_Queue;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -32,6 +33,8 @@ namespace MotionPlanner
         private int indexSquare2 = -1;
         private int indexSquare3 = -1;
         private int [,] screenArray = new int[500, 500]; // Either, -1 for edge, 0, or 1
+        private Point [,] LastPointArray = new Point[500,500]; // Point at index [x,y] has the x and y of the point that went to it
+                                                               // (used for backtracing)
         private Point StartPos = new Point(-1,-1), EndPos = new Point(-1, -1);
 
         public MainWindow()
@@ -331,7 +334,7 @@ namespace MotionPlanner
             int climbX = 0; // -1 for left, 0 for no direction, 1 for right
             int climbY = 0; // -1 for down, 0 for no direction, 1 for up
 
-            AStar(StartPos, EndPos);
+            Route = AStar(StartPos, EndPos);
 
             // Print Final Output
             Console.WriteLine("[");
@@ -366,7 +369,18 @@ namespace MotionPlanner
 
         List<Point> AStar(Point SP, Point EP)
         {
-            return new List<Point>();
+            List<Point> Output = new List<Point>();
+            SimplePriorityQueue<Point> Frontier = new SimplePriorityQueue<Point>();
+            Frontier.Enqueue(SP, ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
+            Point TempPoint = new Point();
+
+            while (Frontier.Count != 0)
+            {
+                TempPoint = Frontier.Dequeue();
+
+            }
+
+            return Output;
         }
 
         bool GoDown(ref Point Currpos)
