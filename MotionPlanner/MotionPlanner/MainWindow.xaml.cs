@@ -51,16 +51,6 @@ namespace MotionPlanner
         public MainWindow()
         {
             InitializeComponent();
-            var graph = new UndirectedGraph<int, Edge<int>>();
-            graph.AddVertex(2);
-            graph.AddVertex(3);
-            graph.AddEdge(new TaggedEdge<int, int>(2, 3, 4));
-            var RayGraph = graph.ToArrayUndirectedGraph();
-            //Console.WriteLine(graph.ToString());
-            foreach (var vertex in RayGraph.Vertices)
-                Console.WriteLine(vertex);
-            var vertList = RayGraph.Vertices.ToList();
-            var x = vertList[0];
             T = new Thread(new ThreadStart(ThreadBody));
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -310,9 +300,9 @@ namespace MotionPlanner
                 Canvas.SetLeft(e1, p.X);
                 Console.WriteLine("Start location at: ({0}, {1})", p.X, p.Y - 21);
                 StartPos = new Point(p.X, p.Y);
-                e1.Width = 2;
-                e1.Height = 2;
-                e1.Fill = Brushes.Tomato;
+                e1.Width = 10;
+                e1.Height = 10;
+                e1.Fill = Brushes.LightCyan;
                 LayoutRoot.Children.Add(e1);
             }
             else if (placingEnd && !endPlaced)
@@ -324,9 +314,9 @@ namespace MotionPlanner
                 Canvas.SetLeft(e1, p.X);
                 Console.WriteLine("End location at: ({0}, {1})", p.X, p.Y - 21);
                 EndPos = new Point(p.X, p.Y);
-                e1.Width = 2;
-                e1.Height = 2;
-                e1.Fill = Brushes.SeaShell;
+                e1.Width = 10;
+                e1.Height = 10;
+                e1.Fill = Brushes.MediumSpringGreen;
                 LayoutRoot.Children.Add(e1);
             }
         }
@@ -434,7 +424,7 @@ namespace MotionPlanner
                         if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
                         {   // Add member to PQ if not invalid and not in PQ already.
 
-                            Console.WriteLine("adding: {0}", NextPoint);
+                            //Console.WriteLine("adding: {0}", NextPoint);
                             g_val = (i < 4) ? Math.Sqrt(2) : 1;
                             LastPointArray[(int)Math.Floor(NextPoint.X), (int)Math.Floor(NextPoint.Y)] = TempPoint;
                             Frontier.Enqueue(NextPoint, g_val + ManhattanDist(NextPoint, EP) + ManhattanDist(TempPoint, EP));
@@ -564,7 +554,7 @@ namespace MotionPlanner
             while (temp != StartPos)
             {   
                 temp = LastPointArray[(int)Math.Floor(temp.X), (int)Math.Floor(temp.Y)];
-                Console.WriteLine("Backtracing to: {0}", temp);
+                //Console.WriteLine("Backtracing to: {0}", temp);
                 finalRoute.Add(temp);
             }
             Console.WriteLine("Solution Found!");
