@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Priority_Queue;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -368,7 +369,18 @@ namespace MotionPlanner
 
         List<Point> AStar(Point SP, Point EP)
         {
-            return List<Point>();
+            List<Point> Output = new List<Point>();
+            SimplePriorityQueue<Point> Frontier = new SimplePriorityQueue<Point>();
+            Frontier.Enqueue(SP, ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
+            Point TempPoint = new Point();
+
+            while (Frontier.Count != 0)
+            {
+                TempPoint = Frontier.Dequeue();
+
+            }
+
+            return Output;
         }
 
         bool GoDown(ref Point Currpos)
