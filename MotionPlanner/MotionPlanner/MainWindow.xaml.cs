@@ -300,28 +300,7 @@ namespace MotionPlanner
             squaresBox.IsChecked = false;
             endBox.IsChecked = false;
             placingEnd = false;
-            //first we need to partition the canvas into cells
-            //next we need to put those partitions into a graph as vertices
-            //then we need to add additional vertices on the boundaries
-            //then we need to sort the vertices
-            //then connect them via straight lines
-            //then run SSSP
-            //also check to make sure we've placed all the shit we need
-            //do other shit too
-            //like actually do the planning :P
-            /*
-            for doing the partitions, keep a sorted list of all vertices, sorted on their x coordinates.
-                for all verts with same x
-                    find vertices with min y and max y
-                    "draw line" from min to top and max to bottom, checking for intersections with other objects
-                    if there is an intersection, draw the line up/down to the intersection and make that be the newest partition
-                    Need to figure out still how to concretely represent these "partitions"
-                    maybe keep them as rectangle objects?
-                    At any rate...
-            */
 
-            // TLDR: My method lets us just run a search on the graph
-            // Handle Unallocated Case
             if (StartPos.X == -1 || StartPos.Y == -1 || EndPos.X == -1 || EndPos.Y == -1)
             {
                 Console.WriteLine("Update Waypoints first!");
@@ -331,8 +310,6 @@ namespace MotionPlanner
             Point currpos = new Point(StartPos.X, StartPos.Y);
             Point oldpos = currpos;
             Point FirstFail = new Point(-1,-1);
-            int climbX = 0; // -1 for left, 0 for no direction, 1 for right
-            int climbY = 0; // -1 for down, 0 for no direction, 1 for up
 
             Route = AStar(StartPos, EndPos);
 
@@ -356,64 +333,76 @@ namespace MotionPlanner
         ////////////////////////////
         // Navigational Functions //
         ////////////////////////////
-        bool GoUp(ref Point Currpos)
-        {
-            if ((int)Math.Floor(Currpos.Y) - 1 < 500 && (int)Math.Floor(Currpos.Y) - 1 >= 0) // Bounds check
-                if (screenArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) - 1] == 0) {  // Verify navigable
-                    Currpos = new Point(Currpos.X, Currpos.Y - 1);
-                    screenArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) - 1] = 2;
-                    return true;
-                }
-            return false;
-        }
-
         List<Point> AStar(Point SP, Point EP)
         {
             List<Point> Output = new List<Point>();
             SimplePriorityQueue<Point> Frontier = new SimplePriorityQueue<Point>();
             Frontier.Enqueue(SP, ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
             Point TempPoint = new Point();
+            Point NextPoint = new Point();
+            Point FailPoint = new Point(-1, -1); // For Failure Comparision Purposes
 
             while (Frontier.Count != 0)
             {
                 TempPoint = Frontier.Dequeue();
-
+                NextPoint = GoUp(TempPoint);
+                if (NextPoint == EP) // Exit Case
+                {
+                    // Build Output, then break
+                    break;
+                }
+                else if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (NextPoint != TempPoint))
+                {
+                    // Add member to PQ if not invalid and not in PQ already.
+                    Frontier.Enqueue(NextPoint, ManhattanDist(NextPoint, EP));
+                }
             }
 
             return Output;
         }
 
-        bool GoDown(ref Point Currpos)
+        Point GoUp(Point Currpos)
+        {
+            if ((int)Math.Floor(Currpos.Y) - 1 < 500 && (int)Math.Floor(Currpos.Y) - 1 >= 0) // Bounds check
+                if (screenArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) - 1] == 0) {  // Verify navigable
+                    LastPointArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) - 1] = Currpos;
+                    Point pos = new Point(Currpos.X, Currpos.Y - 1);
+                    return pos;
+                }
+            return new Point(-1,-1);
+        }
+
+        Point GoDown(Point Currpos)
         {
             if ((int) Math.Floor(Currpos.Y) + 1 < 500 && (int)Math.Floor(Currpos.Y) + 1 >= 0) // Bounds check
                 if (screenArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) + 1] == 0) {  // Verify navigable
-                    Currpos = new Point(Currpos.X, Currpos.Y + 1);
-                    screenArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) + 1] = 2; // Invalidate the point for further travel
-                    return true;
+                    Point pos = new Point(Currpos.X, Currpos.Y + 1);
+                    LastPointArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) + 1] = Currpos;
+                    return pos;
                 }
-            return false;
+            return new Point(-1, -1);
         }
 
-        bool GoLeft(ref Point Currpos)
+        Point GoLeft(Point Currpos)
         {
             if ((int) Math.Floor(Currpos.X) - 1 < 500 && (int)Math.Floor(Currpos.X) - 1 >= 0) // Bounds check
                 if (screenArray[(int)Math.Floor(Currpos.X) - 1, (int)Math.Floor(Currpos.Y)] == 0) { // Verify navigable
-                    Currpos = new Point(Currpos.X - 1, Currpos.Y);
-                    screenArray[(int)Math.Floor(Currpos.X) - 1, (int)Math.Floor(Currpos.Y)] = 2;
-                    return true;
+                    Point pos = new Point(Currpos.X - 1, Currpos.Y);
+                    LastPointArray[(int)Math.Floor(Currpos.X) - 1, (int)Math.Floor(Currpos.Y)] = Currpos;
+                    return pos;
                 }
-            return false;
+            return new Point(-1, -1);
         }
 
-        bool GoRight(ref Point Currpos)
+        Point GoRight(Point Currpos)
         {
             if ((int) Math.Floor(Currpos.X) + 1 < 500 && (int)Math.Floor(Currpos.X) + 1 >= 0) // Bounds check
                 if (screenArray[(int)Math.Floor(Currpos.X) + 1, (int)Math.Floor(Currpos.Y)] == 0) { // Verify navigable
-                    Currpos = new Point(Currpos.X + 1, Currpos.Y);
-                    screenArray[(int)Math.Floor(Currpos.X) + 1, (int)Math.Floor(Currpos.Y)] = 2;
-                    return true;
+                    Point pos = new Point(Currpos.X + 1, Currpos.Y);
+                    LastPointArray[(int)Math.Floor(Currpos.X) + 1, (int)Math.Floor(Currpos.Y)] = Currpos;
+                    return pos;
                 }
-            return false;
+            return new Point(-1, -1);
         }
 
         // Return The Manhattan Distance between two points
