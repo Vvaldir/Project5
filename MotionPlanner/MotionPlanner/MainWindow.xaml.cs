@@ -395,8 +395,9 @@ namespace MotionPlanner
                         if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
                         {   // Add member to PQ if not invalid and not in PQ already.
                             //Console.WriteLine("adding: {0}", NextPoint);
+                            double g_val = (i < 4) ? Math.Sqrt(2) : 1;
                             LastPointArray[(int)Math.Floor(NextPoint.X), (int)Math.Floor(NextPoint.Y)] = TempPoint;
-                            Frontier.Enqueue(NextPoint, 1 + 5 * ManhattanDist(NextPoint, EP));
+                            Frontier.Enqueue(NextPoint, g_val + 5 * ManhattanDist(NextPoint, EP));
                         }
                     }
                 }
