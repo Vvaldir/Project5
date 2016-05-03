@@ -443,7 +443,7 @@ namespace MotionPlanner
             return (int)(Math.Abs(currpos.X - endpos.X) + Math.Abs(currpos.Y - endpos.Y));
         }
         
-             List<Point> backtrace(Point P){
+         List<Point> backtrace(Point P){
             List<Point> finalRoute = new List<Point>();
             Point temp = P;
 
