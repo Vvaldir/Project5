@@ -9,11 +9,12 @@
     <Grid Margin="0,0,30,0">
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
-        <CheckBox x:Name="squaresBox" Checked="squaresBox_Checked" Unchecked="squaresBox_Unchecked" Content="Place Squares" HorizontalAlignment="Left" Margin="29,0,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="startBox" Checked="startBox_Checked" Unchecked="startBox_Unchecked" Content="Place Start" HorizontalAlignment="Left" Margin="148,0,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="endBox" Checked="endBox_Checked" Unchecked="endBox_Unchecked" Content="Place End" HorizontalAlignment="Left" Margin="264,0,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="squaresBox" Checked="squaresBox_Checked" Unchecked="squaresBox_Unchecked" Content="Place Squares" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="startBox" Checked="startBox_Checked" Unchecked="startBox_Unchecked" Content="Place Start" HorizontalAlignment="Left" Margin="112,0,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="endBox" Checked="endBox_Checked" Unchecked="endBox_Unchecked" Content="Place End" HorizontalAlignment="Left" Margin="196,0,0,0" VerticalAlignment="Top"/>
         <Canvas HorizontalAlignment="Left" MouseDown="LayoutRoot_MouseDown" Name="LayoutRoot" Background="Black" Height="500" Margin="0,21,0,0" VerticalAlignment="Top" Width="500" Grid.ColumnSpan="2"/>
-        <Button x:Name="button" Content="Plan!" HorizontalAlignment="Left" Margin="378,0,0,0" VerticalAlignment="Top" Width="75" Height="21" Click="button_Click"/>
+        <Button x:Name="button" Content="Plan!" HorizontalAlignment="Left" Margin="283,0,0,0" VerticalAlignment="Top" Width="75" Height="21" Click="button_Click"/>
+        <Button x:Name="clear" Content="Clear" HorizontalAlignment="Left" Margin="363,0,0,0" VerticalAlignment="Top" Width="75" Height="21" Click="clear_Click"/>
 
     </Grid>
 </Window>
