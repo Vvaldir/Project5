@@ -44,6 +44,7 @@ namespace MotionPlanner
         // Thread Variables
         Thread T;
         Mutex M = new Mutex(); // Protects Runstate
+        Mutex R = new Mutex(); // Protects Route
         bool Runstate = false;
         bool AwaitingResult = false;
 
@@ -62,7 +63,7 @@ namespace MotionPlanner
             var x = vertList[0];
             T = new Thread(new ThreadStart(ThreadBody));
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Interval = TimeSpan.FromMilliseconds(1000);
             timer.Tick += OnTimedEvent;
             timer.Start();
             T.Start();
@@ -70,11 +71,14 @@ namespace MotionPlanner
 
         private void OnTimedEvent(object sender, EventArgs e)
         {
-            if(AwaitingResult && Route != new List<Point>())
+            
+            if (AwaitingResult && !Runstate)
             {
+                R.WaitOne();
                 PrintRoute(Route);
                 AwaitingResult = false;
                 Route = new List<Point>();
+                R.ReleaseMutex();
             }
             if (!T.IsAlive)
             {
@@ -292,13 +296,7 @@ namespace MotionPlanner
                                             screenArray[(int)Math.Floor(row), (int)Math.Floor(col + 1)] = -1;
                                     }
                                 }
-                            }
-<<<<<<< HEAD
-                           // Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
-=======
-                            //Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
->>>>>>> 580f254b2cdfcdd164d19e31b9a08268877718e6
-                            
+                            }                            
                         }
                         break;
                     default: break;
@@ -371,7 +369,9 @@ namespace MotionPlanner
                 if (Runstate)
                 {
                     Console.WriteLine("Thread Beginning Work.");
+                    R.WaitOne();
                     Route = AStar(StartPos, EndPos);
+                    R.ReleaseMutex();
                     M.WaitOne();
                     Runstate = false;
                     M.ReleaseMutex();
