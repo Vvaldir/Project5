@@ -343,7 +343,7 @@ namespace MotionPlanner
         {
             List<Point> Output = new List<Point>();
             SimplePriorityQueue<Point> Frontier = new SimplePriorityQueue<Point>();
-            Frontier.Enqueue(SP, ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
+            Frontier.Enqueue(SP, 1 + ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
             Point TempPoint = new Point();
             Point NextPoint = new Point();
             Point FailPoint = new Point(-1, -1); // For Failure Comparision Purposes
@@ -351,20 +351,41 @@ namespace MotionPlanner
             while (Frontier.Count != 0)
             {
                 TempPoint = Frontier.Dequeue();
-                NextPoint = GoUp(TempPoint);
-                if (NextPoint == EP) // Exit Case
+                // Loop through every direction.
+                for (int i = 0; i < 4; ++i)
                 {
-                    // Build Output, then break
-                    break;
-                }
-                else if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (NextPoint != TempPoint))
-                {
-                    // Add member to PQ if not invalid and not in PQ already.
-                    Frontier.Enqueue(NextPoint, ManhattanDist(NextPoint, EP));
+                    NextPoint = DirectionSeletor(i, TempPoint);
+                    if (NextPoint == EP) // Exit Case
+                    {
+                        // Build Output, then break
+                        break;
+                    }
+                    else if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (NextPoint != TempPoint))
+                    {
+                        // Add member to PQ if not invalid and not in PQ already.
+                        Frontier.Enqueue(NextPoint, 1 + ManhattanDist(NextPoint, EP));
+                    }
                 }
             }
 
             return Output;
+        }
+
+        Point DirectionSeletor(int I, Point CurrPos)
+        { // Based on I, go in the appropriate Direction.
+            switch (I)
+            {
+                case 0:
+                    return GoUp(CurrPos);
+                case 1:
+                    return GoLeft(CurrPos);
+                case 2:
+                    return GoRight(CurrPos);
+                case 3:
+                    return GoDown(CurrPos);
+                default:
+                    return new Point(-1, -1);
+            }
         }
 
         Point GoUp(Point Currpos)
