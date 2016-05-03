@@ -71,7 +71,6 @@ namespace MotionPlanner
 
         private void OnTimedEvent(object sender, EventArgs e)
         {
-            
             if (AwaitingResult && !Runstate)
             {
                 R.WaitOne();
