@@ -32,10 +32,12 @@ namespace MotionPlanner
         private int indexSquare1 = -1;
         private int indexSquare2 = -1;
         private int indexSquare3 = -1;
+        private Point StartPos = new Point(-1, -1);
+        private Point EndPos = new Point(-1, -1);
         private int [,] screenArray = new int[500, 500]; // Either, -1 for edge, 0, or 1
         private Point [,] LastPointArray = new Point[500,500]; // Point at index [x,y] has the x and y of the point that went to it
                                                                // (used for backtracing)
-        private Point StartPos = new Point(-1,-1), EndPos = new Point(-1, -1);
+        
 
         public MainWindow()
         {
@@ -319,9 +321,16 @@ namespace MotionPlanner
 
             Route = AStar(StartPos, EndPos);
 
+            PrintRoute(Route);
+            //return Route;
+        }
+
+        void PrintRoute(List<Point> Route)
+        {
             // Print Final Output
             Console.WriteLine("[");
-            foreach (Point P in Route){
+            foreach (Point P in Route)
+            {
                 Ellipse e1 = new Ellipse();
                 Canvas.SetTop(e1, P.Y - 21);
                 Canvas.SetLeft(e1, P.X);
@@ -333,7 +342,6 @@ namespace MotionPlanner
                 Console.WriteLine(P);
             }
             Console.WriteLine("]");
-            //return Route;
         }
 
         ////////////////////////////
@@ -344,7 +352,7 @@ namespace MotionPlanner
             List<Point> Output = new List<Point>();
             List<Point> VistedNodes = new List<Point>();
             SimplePriorityQueue<Point> Frontier = new SimplePriorityQueue<Point>();
-            Frontier.Enqueue(SP, 1 + ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
+            Frontier.Enqueue(SP, 1 + 5 * ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
             Point TempPoint = new Point();
             Point NextPoint = new Point();
             Point FailPoint = new Point(-1, -1); // For Failure Comparision Purposes
@@ -353,27 +361,30 @@ namespace MotionPlanner
             {
                 TempPoint = Frontier.Dequeue();
                 VistedNodes.Add(TempPoint);
-                // Loop through every direction.
+                
                 if (TempPoint == EP) // Exit Case
                 {
                     // Build Output, then break
+                    Console.WriteLine("Breaking on: {0}", TempPoint);
+                    Output = Backtrace(EP);
                     break;
                 }
                 else
                 {
+                    // Loop through every direction from the point to get all of his neighbors
                     for (int i = 0; i < 4; ++i)
                     {
                         NextPoint = DirectionSeletor(i, TempPoint);
 
                         if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
-                        {
-                            // Add member to PQ if not invalid and not in PQ already.
-                            Frontier.Enqueue(NextPoint, 1 + ManhattanDist(NextPoint, EP));
+                        {   // Add member to PQ if not invalid and not in PQ already.
+                            //Console.WriteLine("adding: {0}", NextPoint);
+                            LastPointArray[(int)Math.Floor(NextPoint.X), (int)Math.Floor(NextPoint.Y)] = TempPoint;
+                            Frontier.Enqueue(NextPoint, 1 + 5 * ManhattanDist(NextPoint, EP));
                         }
                     }
                 }
             }
-
             return Output;
         }
 
@@ -398,7 +409,6 @@ namespace MotionPlanner
         {
             if ((int)Math.Floor(Currpos.Y) - 1 < 500 && (int)Math.Floor(Currpos.Y) - 1 >= 0) // Bounds check
                 if (screenArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) - 1] == 0) {  // Verify navigable
-                    LastPointArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) - 1] = Currpos;
                     Point pos = new Point(Currpos.X, Currpos.Y - 1);
                     return pos;
                 }
@@ -410,7 +420,6 @@ namespace MotionPlanner
             if ((int) Math.Floor(Currpos.Y) + 1 < 500 && (int)Math.Floor(Currpos.Y) + 1 >= 0) // Bounds check
                 if (screenArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) + 1] == 0) {  // Verify navigable
                     Point pos = new Point(Currpos.X, Currpos.Y + 1);
-                    LastPointArray[(int)Math.Floor(Currpos.X), (int)Math.Floor(Currpos.Y) + 1] = Currpos;
                     return pos;
                 }
             return new Point(-1, -1);
@@ -421,7 +430,6 @@ namespace MotionPlanner
             if ((int) Math.Floor(Currpos.X) - 1 < 500 && (int)Math.Floor(Currpos.X) - 1 >= 0) // Bounds check
                 if (screenArray[(int)Math.Floor(Currpos.X) - 1, (int)Math.Floor(Currpos.Y)] == 0) { // Verify navigable
                     Point pos = new Point(Currpos.X - 1, Currpos.Y);
-                    LastPointArray[(int)Math.Floor(Currpos.X) - 1, (int)Math.Floor(Currpos.Y)] = Currpos;
                     return pos;
                 }
             return new Point(-1, -1);
@@ -432,7 +440,6 @@ namespace MotionPlanner
             if ((int) Math.Floor(Currpos.X) + 1 < 500 && (int)Math.Floor(Currpos.X) + 1 >= 0) // Bounds check
                 if (screenArray[(int)Math.Floor(Currpos.X) + 1, (int)Math.Floor(Currpos.Y)] == 0) { // Verify navigable
                     Point pos = new Point(Currpos.X + 1, Currpos.Y);
-                    LastPointArray[(int)Math.Floor(Currpos.X) + 1, (int)Math.Floor(Currpos.Y)] = Currpos;
                     return pos;
                 }
             return new Point(-1, -1);
@@ -443,18 +450,21 @@ namespace MotionPlanner
             return (int)(Math.Abs(currpos.X - endpos.X) + Math.Abs(currpos.Y - endpos.Y));
         }
         
-         List<Point> backtrace(Point P){
+         List<Point> Backtrace(Point P){
             List<Point> finalRoute = new List<Point>();
             Point temp = P;
-
             finalRoute.Add(P);
+
             while (temp != StartPos)
             {   
                 temp = LastPointArray[(int)Math.Floor(temp.X), (int)Math.Floor(temp.Y)];
+                Console.WriteLine("Backtracing to: {0}", temp);
                 finalRoute.Add(temp);
             }
+
             finalRoute.Add(StartPos);
             finalRoute.Reverse();
+
             return finalRoute;
         }
     }

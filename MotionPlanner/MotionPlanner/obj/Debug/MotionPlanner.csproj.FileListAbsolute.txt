@@ -75,3 +75,24 @@ C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE 452\Project 5\MotionPlanner\Mot
 C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\MotionPlanner.exe.config
 C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner.exe
 C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner.pdb
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\MotionPlanner.exe
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\MotionPlanner.pdb
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\Priority Queue.dll
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.Data.dll
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.dll
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.Graphviz.dll
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.Serialization.dll
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\Priority Queue.pdb
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.xml
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.Data.xml
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.Graphviz.xml
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\bin\Debug\QuickGraph.Serialization.xml
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner.csprojResolveAssemblyReference.cache
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MainWindow.g.cs
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\App.g.cs
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner_MarkupCompile.cache
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner_MarkupCompile.lref
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MainWindow.baml
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner.g.resources
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner.Properties.Resources.resources
+C:\Users\Gregory\Dropbox\School\Senior_Year\CSCE_452\Project5\Project5\MotionPlanner\MotionPlanner\obj\Debug\MotionPlanner.csproj.GenerateResource.Cache
