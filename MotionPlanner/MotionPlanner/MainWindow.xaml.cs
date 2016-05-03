@@ -342,6 +342,7 @@ namespace MotionPlanner
         List<Point> AStar(Point SP, Point EP)
         {
             List<Point> Output = new List<Point>();
+            List<Point> VistedNodes = new List<Point>();
             SimplePriorityQueue<Point> Frontier = new SimplePriorityQueue<Point>();
             Frontier.Enqueue(SP, 1 + ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
             Point TempPoint = new Point();
@@ -351,6 +352,7 @@ namespace MotionPlanner
             while (Frontier.Count != 0)
             {
                 TempPoint = Frontier.Dequeue();
+                VistedNodes.Add(TempPoint);
                 // Loop through every direction.
                 for (int i = 0; i < 4; ++i)
                 {
@@ -360,7 +362,7 @@ namespace MotionPlanner
                         // Build Output, then break
                         break;
                     }
-                    else if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (NextPoint != TempPoint))
+                    else if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
                     {
                         // Add member to PQ if not invalid and not in PQ already.
                         Frontier.Enqueue(NextPoint, 1 + ManhattanDist(NextPoint, EP));
