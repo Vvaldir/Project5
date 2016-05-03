@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace MotionPlanner
 {
@@ -23,6 +24,7 @@ namespace MotionPlanner
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer timer;
         private bool placingSquares = false;
         private bool placingStart = false;
         private bool placingEnd = false;
@@ -39,7 +41,11 @@ namespace MotionPlanner
         private int [,] screenArray = new int[500, 500]; // Either, -1 for edge, 0, or 1
         private Point [,] LastPointArray = new Point[500,500]; // Point at index [x,y] has the x and y of the point that went to it
                                                                // (used for backtracing)
+        // Thread Variables
         Thread T;
+        Mutex M = new Mutex(); // Protects Runstate
+        bool Runstate = false;
+        bool AwaitingResult = false;
 
         public MainWindow()
         {
@@ -55,9 +61,28 @@ namespace MotionPlanner
             var vertList = RayGraph.Vertices.ToList();
             var x = vertList[0];
             T = new Thread(new ThreadStart(ThreadBody));
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Tick += OnTimedEvent;
+            timer.Start();
+            T.Start();
         }
 
-         private void squaresBox_Checked(object sender, RoutedEventArgs e)
+        private void OnTimedEvent(object sender, EventArgs e)
+        {
+            if(AwaitingResult && Route != new List<Point>())
+            {
+                PrintRoute(Route);
+                AwaitingResult = false;
+                Route = new List<Point>();
+            }
+            if (!T.IsAlive)
+            {
+                Console.WriteLine("Worker Thread Dead!");
+            }
+        }
+
+        private void squaresBox_Checked(object sender, RoutedEventArgs e)
         {
             placingSquares = true;
             startBox.IsChecked = false;
@@ -165,7 +190,7 @@ namespace MotionPlanner
                                     }
                                 }
                             }
-                            Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
+                            //Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
 
                         }
                         break;
@@ -217,7 +242,7 @@ namespace MotionPlanner
                                     }
                                 }
                             }
-                            Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
+                            //Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
 
                         }
                         break;
@@ -268,7 +293,7 @@ namespace MotionPlanner
                                     }
                                 }
                             }
-                            Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
+                           // Console.WriteLine("cell ({0},{1}) has a 1 in it", row, col);
                             
                         }
                         break;
@@ -325,20 +350,30 @@ namespace MotionPlanner
             Point oldpos = currpos;
             Point FirstFail = new Point(-1,-1);
 
-            
+
             //Route = AStar(StartPos, EndPos);
-            // Process Route
-            T.Start();
-            T.Join();
-            PrintRoute(Route);
+            // Tell Thread To Process Route
+            M.WaitOne();
+            Runstate = true;
+            M.ReleaseMutex();
+            AwaitingResult = true;
             //return Route;
         }
 
-
-
         void ThreadBody()
         {   // Function to Run A* in a thread.
-            Route = AStar(StartPos, EndPos);
+            while (true)
+            {
+                if (Runstate)
+                {
+                    Console.WriteLine("Thread Beginning Work.");
+                    Route = AStar(StartPos, EndPos);
+                    M.WaitOne();
+                    Runstate = false;
+                    M.ReleaseMutex();
+                }
+                else Thread.Sleep(1000);
+            }
         }
 
         void PrintRoute(List<Point> Route)
@@ -368,7 +403,7 @@ namespace MotionPlanner
             List<Point> Output = new List<Point>();
             List<Point> VistedNodes = new List<Point>();
             SimplePriorityQueue<Point> Frontier = new SimplePriorityQueue<Point>();
-            Frontier.Enqueue(SP, 1 + 5 * ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
+            Frontier.Enqueue(SP, 1 + ManhattanDist(SP, EP)); // Add the Start Point to the Priority Queue
             Point TempPoint = new Point();
             Point NextPoint = new Point();
             Point FailPoint = new Point(-1, -1); // For Failure Comparision Purposes
@@ -394,9 +429,9 @@ namespace MotionPlanner
 
                         if (!Frontier.Contains(NextPoint) && (NextPoint != FailPoint) && (!VistedNodes.Contains(NextPoint)))
                         {   // Add member to PQ if not invalid and not in PQ already.
-                            //Console.WriteLine("adding: {0}", NextPoint);
+                            Console.WriteLine("adding: {0}", NextPoint);
                             LastPointArray[(int)Math.Floor(NextPoint.X), (int)Math.Floor(NextPoint.Y)] = TempPoint;
-                            Frontier.Enqueue(NextPoint, 1 + 5 * ManhattanDist(NextPoint, EP));
+                            Frontier.Enqueue(NextPoint, 1 + ManhattanDist(NextPoint, EP) + ManhattanDist(TempPoint, EP));
                         }
                     }
                 }
@@ -523,7 +558,7 @@ namespace MotionPlanner
             while (temp != StartPos)
             {   
                 temp = LastPointArray[(int)Math.Floor(temp.X), (int)Math.Floor(temp.Y)];
-                //Console.WriteLine("Backtracing to: {0}", temp);
+                Console.WriteLine("Backtracing to: {0}", temp);
                 finalRoute.Add(temp);
             }
             Console.WriteLine("Solution Found!");
